@@ -1,0 +1,9 @@
+{
+  "patient_id": "P12345",
+  "patient_name": "John Doe",
+  "age": "45",
+  "gender": "M",
+  "study_date": "2025-12-16",
+  "image_type": "xray",
+  "image_path": "/tmp/medical_images/sample_xray.jpg"
+}
