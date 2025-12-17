@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import axios from 'axios'
+import api from '../api'
 
 function FinalReport({ reportData, onReset }) {
   const [downloading, setDownloading] = useState(false)
@@ -16,7 +16,7 @@ function FinalReport({ reportData, onReset }) {
 
     try {
       // Call the download endpoint
-      const response = await axios.get(
+      const response = await api.get(
         `/medical/report/${reportData.session_id}/download`,
         {
           responseType: 'blob', // Important for binary data
@@ -58,7 +58,7 @@ function FinalReport({ reportData, onReset }) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-6xl mx-auto px-4 py-6">
       {/* Success Banner */}
       <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-6">
         <div className="flex">
@@ -135,19 +135,19 @@ function FinalReport({ reportData, onReset }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="space-y-3">
+        <div className="space-y-4">
           <button
             onClick={handleDownloadPDF}
             disabled={downloading}
-            className={`w-full px-6 py-4 rounded-md font-medium transition flex items-center justify-center ${
+            className={`w-full px-8 py-5 rounded-xl font-bold text-lg shadow-lg transition-all duration-300 flex items-center justify-center ${
               downloading 
-                ? 'bg-gray-400 text-gray-200 cursor-not-allowed' 
-                : 'bg-medical-blue text-white hover:bg-blue-700'
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                : 'bg-gradient-to-r from-blue-900 to-blue-800 text-white hover:from-blue-800 hover:to-blue-700 hover:shadow-xl transform hover:-translate-y-0.5'
             }`}
           >
             {downloading ? (
               <>
-                <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin h-6 w-6 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
@@ -155,7 +155,7 @@ function FinalReport({ reportData, onReset }) {
               </>
             ) : (
               <>
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-7 h-7 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 Download PDF Report
@@ -166,12 +166,15 @@ function FinalReport({ reportData, onReset }) {
           <button
             onClick={onReset}
             disabled={downloading}
-            className={`w-full px-6 py-3 rounded-md font-medium transition ${
+            className={`w-full px-8 py-4 rounded-xl font-semibold text-base shadow-md transition-all duration-300 ${
               downloading
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                : 'bg-gradient-to-r from-gray-200 to-gray-100 text-gray-700 hover:from-gray-300 hover:to-gray-200 hover:shadow-lg transform hover:-translate-y-0.5'
             }`}
           >
+            <svg className="w-5 h-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
             Start New Report
           </button>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../api'
 
 function ReportReview({ sessionId, onReportApproved }) {
   const [report, setReport] = useState(null)
@@ -14,7 +14,7 @@ function ReportReview({ sessionId, onReportApproved }) {
 
   const fetchReport = async () => {
     try {
-      const response = await axios.get(`/medical/report/${sessionId}`)
+      const response = await api.get(`/medical/report/${sessionId}`)
       if (response.data.report) {
         setReport(response.data.report)
       }
@@ -34,7 +34,7 @@ function ReportReview({ sessionId, onReportApproved }) {
     setSubmitting(true)
 
     try {
-      const response = await axios.post('/medical/approve-report', {
+      const response = await api.post('/medical/approve-report', {
         session_id: sessionId,
         report_id: report.report_id,
         approved: true,
@@ -61,7 +61,7 @@ function ReportReview({ sessionId, onReportApproved }) {
     setSubmitting(true)
 
     try {
-      await axios.post('/medical/approve-report', {
+      await api.post('/medical/approve-report', {
         session_id: sessionId,
         report_id: report.report_id,
         approved: false,
@@ -94,9 +94,9 @@ function ReportReview({ sessionId, onReportApproved }) {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
       {/* Alert Banner */}
-      <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+      <div className="bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg shadow-sm p-4">
         <div className="flex">
           <div className="flex-shrink-0">
             <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
@@ -201,45 +201,83 @@ function ReportReview({ sessionId, onReportApproved }) {
         
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Reviewer Name *
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Reviewer Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={reviewerName}
               onChange={(e) => setReviewerName(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-medical-blue focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-blue-900 transition-all duration-200 text-gray-800 placeholder-gray-400"
               placeholder="Dr. Smith"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               Additional Comments (optional)
             </label>
             <textarea
               value={comments}
               onChange={(e) => setComments(e.target.value)}
-              rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-medical-blue focus:border-transparent"
+              rows={4}
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-blue-900 transition-all duration-200 text-gray-800 placeholder-gray-400 resize-none"
               placeholder="Additional clinical notes or corrections..."
             />
           </div>
 
-          <div className="flex space-x-4 pt-4">
+          <div className="flex gap-4 pt-4">
             <button
               onClick={handleApprove}
               disabled={submitting}
-              className="flex-1 bg-green-600 text-white px-6 py-3 rounded-md font-medium hover:bg-green-700 transition disabled:bg-gray-400"
+              className={`flex-1 px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition-all duration-300 flex items-center justify-center ${
+                submitting
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-green-700 to-green-600 text-white hover:from-green-600 hover:to-green-500 hover:shadow-xl transform hover:-translate-y-0.5'
+              }`}
             >
-              ✓ Approve Report
+              {submitting ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <svg className="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Approve Report
+                </>
+              )}
             </button>
             <button
               onClick={handleReject}
               disabled={submitting}
-              className="flex-1 bg-red-600 text-white px-6 py-3 rounded-md font-medium hover:bg-red-700 transition disabled:bg-gray-400"
+              className={`px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition-all duration-300 flex items-center justify-center ${
+                submitting
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-red-600 to-red-500 text-white hover:from-red-500 hover:to-red-400 hover:shadow-xl transform hover:-translate-y-0.5'
+              }`}
             >
-              ✗ Reject Report
+              {submitting ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <svg className="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Reject Report
+                </>
+              )}
             </button>
           </div>
         </div>

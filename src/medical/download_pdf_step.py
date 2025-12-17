@@ -44,7 +44,7 @@ async def handler(req, context):
     
     try:
         # Get PDF path from state
-        pdf_path = await context.state.get(f"pdf_path_{session_id}")
+        pdf_path = await context.state.get("medical_reports", f"pdf_path_{session_id}")
         
         if not pdf_path:
             context.logger.warn("PDF not found", {"session_id": session_id})
@@ -70,7 +70,7 @@ async def handler(req, context):
             }
         
         # Get final report for metadata
-        final_report = await context.state.get(f"final_report_{session_id}")
+        final_report = await context.state.get("medical_reports", f"final_report_{session_id}")
         report_id = final_report.get('report_id', 'report') if final_report else 'report'
         
         # Read PDF file

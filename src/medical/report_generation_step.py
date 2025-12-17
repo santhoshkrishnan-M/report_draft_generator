@@ -59,9 +59,9 @@ async def handler(req, context):
     
     try:
         # Retrieve stored data from state
-        patient_info = await context.state.get(f"patient_info_{session_id}")
-        imaging_result = await context.state.get(f"imaging_result_{session_id}")
-        lab_result = await context.state.get(f"lab_result_{session_id}")
+        patient_info = await context.state.get("medical_reports", f"patient_info_{session_id}")
+        imaging_result = await context.state.get("medical_reports", f"imaging_result_{session_id}")
+        lab_result = await context.state.get("medical_reports", f"lab_result_{session_id}")
         
         if not patient_info:
             raise ValueError("Patient information not found. Please complete image analysis first.")
@@ -75,6 +75,7 @@ async def handler(req, context):
         
         # Store draft report in state
         await context.state.set(
+            "medical_reports",
             f"draft_report_{session_id}",
             report
         )

@@ -42,8 +42,8 @@ async def handler(req, context):
     
     try:
         # Try to get final report first
-        final_report = await context.state.get(f"final_report_{session_id}")
-        pdf_path = await context.state.get(f"pdf_path_{session_id}")
+        final_report = await context.state.get("medical_reports", f"final_report_{session_id}")
+        pdf_path = await context.state.get("medical_reports", f"pdf_path_{session_id}")
         
         if final_report:
             return {
@@ -57,7 +57,7 @@ async def handler(req, context):
             }
         
         # If no final report, get draft
-        draft_report = await context.state.get(f"draft_report_{session_id}")
+        draft_report = await context.state.get("medical_reports", f"draft_report_{session_id}")
         
         if draft_report:
             return {

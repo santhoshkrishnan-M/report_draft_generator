@@ -66,6 +66,7 @@ async def handler(req, context):
         
         # Store lab result in state
         await context.state.set(
+            "medical_reports",
             f"lab_result_{session_id}",
             analysis_result
         )

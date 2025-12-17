@@ -58,11 +58,26 @@ class LabResultAnalyzer:
     def __init__(self):
         self.reference_ranges = REFERENCE_RANGES
     
-    def analyze_value(self, test_name: str, value: float) -> Dict[str, Any]:
+    def analyze_value(self, test_name: str, value) -> Dict[str, Any]:
         """
         Analyze a single lab test value
         Returns status and interpretation
         """
+        # Extract numeric value if it's a dict
+        if isinstance(value, dict):
+            value = value.get('value', value)
+        
+        # Convert to float
+        try:
+            value = float(value)
+        except (ValueError, TypeError):
+            return {
+                'test_name': test_name,
+                'value': str(value),
+                'status': 'error',
+                'message': f'Invalid numeric value: {value}'
+            }
+        
         test_name_lower = test_name.lower().replace(' ', '_')
         
         if test_name_lower not in self.reference_ranges:

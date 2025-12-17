@@ -74,7 +74,7 @@ async def handler(req, context):
     
     try:
         # Get draft report from state
-        draft_report = await context.state.get(f"draft_report_{session_id}")
+        draft_report = await context.state.get("medical_reports", f"draft_report_{session_id}")
         
         if not draft_report:
             raise ValueError("Draft report not found")
@@ -87,7 +87,7 @@ async def handler(req, context):
                 "rejected_at": context.trace_id
             }
             
-            await context.state.set(f"rejection_{session_id}", rejection_info)
+            await context.state.set("medical_reports", f"rejection_{session_id}", rejection_info)
             
             await context.emit({
                 "topic": "report-rejected",
@@ -127,8 +127,8 @@ async def handler(req, context):
         pdf_path = export_report_to_pdf(final_report, pdf_output_dir)
         
         # Store final report
-        await context.state.set(f"final_report_{session_id}", final_report)
-        await context.state.set(f"pdf_path_{session_id}", pdf_path)
+        await context.state.set("medical_reports", f"final_report_{session_id}", final_report)
+        await context.state.set("medical_reports", f"pdf_path_{session_id}", pdf_path)
         
         # Emit approval event
         await context.emit({

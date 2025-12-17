@@ -86,12 +86,14 @@ async def handler(req, context):
         
         # Store analysis result in state
         await context.state.set(
+            "medical_reports",
             f"imaging_result_{session_id}",
             analysis_result
         )
         
         # Store patient info
         await context.state.set(
+            "medical_reports",
             f"patient_info_{session_id}",
             {
                 "patient_id": patient_id,
