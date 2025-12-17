@@ -195,8 +195,7 @@ class MedicalReportPDFGenerator:
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('BOTTOMPADDING', (0, 0), (-1, -1), 12),
         ]))
-        story.append(header_table)
-        story.append(Spacer(1, 0.15*inch))
+        story.extend([header_table, Spacer(1, 0.15*inch)])
         
         # Report Metadata
         report_id = report_data.get('report_id', 'N/A')
@@ -207,8 +206,7 @@ class MedicalReportPDFGenerator:
         if report_data.get('reviewer_name'):
             meta_text += f" | <b>Reviewed by:</b> {report_data.get('reviewer_name')}"
         
-        story.append(Paragraph(meta_text, self.styles['ReportBody']))
-        story.append(Spacer(1, 0.25*inch))
+        story.extend([Paragraph(meta_text, self.styles['ReportBody']), Spacer(1, 0.25*inch)])
         
         # Patient Information Section
         story.append(Paragraph("PATIENT INFORMATION", self.styles['SectionHeading']))
@@ -238,14 +236,15 @@ class MedicalReportPDFGenerator:
             ('TOPPADDING', (0, 0), (-1, -1), 8),
             ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
         ]))
-        story.append(patient_table)
-        story.append(Spacer(1, 0.3*inch))
+        story.extend([patient_table, Spacer(1, 0.3*inch)])
         
         # Examination Summary
-        story.append(Paragraph("EXAMINATION SUMMARY", self.styles['SectionHeading']))
         exam_summary = report_data.get('examination_summary', 'No examination summary provided.')
-        story.append(Paragraph(exam_summary, self.styles['ReportBody']))
-        story.append(Spacer(1, 0.25*inch))
+        story.extend([
+            Paragraph("EXAMINATION SUMMARY", self.styles['SectionHeading']),
+            Paragraph(exam_summary, self.styles['ReportBody']),
+            Spacer(1, 0.25*inch)
+        ])
         
         # Imaging Findings Section
         imaging = report_data.get('imaging_findings', {})
@@ -254,17 +253,16 @@ class MedicalReportPDFGenerator:
             
             findings_list = imaging.get('findings', [])
             if findings_list:
+                finding_elements = []
                 for i, finding in enumerate(findings_list, 1):
                     # Check for critical findings
                     is_critical = any(marker in finding.upper() for marker in ['CRITICAL', 'URGENT', 'IMMEDIATE', '⚠️'])
                     
-                    if is_critical:
-                        finding_text = f"<b><font color='red'>{i}. {finding}</font></b>"
-                    else:
-                        finding_text = f"{i}. {finding}"
+                    finding_text = (f"<b><font color='red'>{i}. {finding}</font></b>" if is_critical 
+                                  else f"{i}. {finding}")
                     
-                    story.append(Paragraph(finding_text, self.styles['ReportBody']))
-                    story.append(Spacer(1, 0.08*inch))
+                    finding_elements.extend([Paragraph(finding_text, self.styles['ReportBody']), Spacer(1, 0.08*inch)])
+                story.extend(finding_elements)
             else:
                 story.append(Paragraph("No significant imaging findings reported.", self.styles['ReportBody']))
             
@@ -292,21 +290,19 @@ class MedicalReportPDFGenerator:
             
             findings_list = lab.get('findings', [])
             if findings_list:
+                lab_elements = []
                 # Create detailed lab table if we have structured data
                 if lab.get('abnormal_findings') or lab.get('critical_findings'):
-                    story.append(Paragraph("Abnormal Results:", self.styles['ReportBody']))
-                    story.append(Spacer(1, 0.1*inch))
+                    lab_elements.extend([Paragraph("Abnormal Results:", self.styles['ReportBody']), Spacer(1, 0.1*inch)])
                 
                 for i, finding in enumerate(findings_list, 1):
                     is_critical = 'CRITICAL' in finding.upper() or '⚠️' in finding
                     
-                    if is_critical:
-                        finding_text = f"<b><font color='red'>{i}. {finding}</font></b>"
-                    else:
-                        finding_text = f"{i}. {finding}"
+                    finding_text = (f"<b><font color='red'>{i}. {finding}</font></b>" if is_critical
+                                  else f"{i}. {finding}")
                     
-                    story.append(Paragraph(finding_text, self.styles['ReportBody']))
-                    story.append(Spacer(1, 0.08*inch))
+                    lab_elements.extend([Paragraph(finding_text, self.styles['ReportBody']), Spacer(1, 0.08*inch)])
+                story.extend(lab_elements)
             else:
                 story.append(Paragraph("All laboratory values within normal limits.", self.styles['ReportBody']))
             
@@ -316,10 +312,11 @@ class MedicalReportPDFGenerator:
         story.append(Paragraph("INTERPRETIVE NOTES", self.styles['SectionHeading']))
         notes = report_data.get('interpretive_notes', [])
         if notes:
+            note_elements = []
             for note in notes:
                 if note and note.strip():
-                    story.append(Paragraph(f"• {note}", self.styles['ReportBody']))
-                    story.append(Spacer(1, 0.08*inch))
+                    note_elements.extend([Paragraph(f"• {note}", self.styles['ReportBody']), Spacer(1, 0.08*inch)])
+            story.extend(note_elements)
         else:
             story.append(Paragraph("No additional interpretive notes.", self.styles['ReportBody']))
         story.append(Spacer(1, 0.25*inch))
@@ -328,10 +325,11 @@ class MedicalReportPDFGenerator:
         story.append(Paragraph("RECOMMENDATIONS", self.styles['SectionHeading']))
         recommendations = report_data.get('recommendations', [])
         if recommendations:
+            rec_elements = []
             for rec in recommendations:
                 if rec and rec.strip():
-                    story.append(Paragraph(f"• {rec}", self.styles['ReportBody']))
-                    story.append(Spacer(1, 0.08*inch))
+                    rec_elements.extend([Paragraph(f"• {rec}", self.styles['ReportBody']), Spacer(1, 0.08*inch)])
+            story.extend(rec_elements)
         else:
             story.append(Paragraph("No specific recommendations at this time. Follow up as clinically indicated.", 
                                  self.styles['ReportBody']))
