@@ -43,3 +43,4 @@ logs/
 # Generated files
 *.pdf
 uploads/
+outputs/

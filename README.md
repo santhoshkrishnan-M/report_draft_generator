@@ -1,6 +1,28 @@
-# reportgen
+# Medical Report Generation System
 
-A Motia tutorial project in Python.
+An AI-assisted medical diagnostic report drafting system built with Motia framework.
+
+## 🎯 Features
+
+✨ **Complete Medical Workflow**
+- Image analysis with OpenCV preprocessing
+- Laboratory result analysis with reference ranges
+- AI-assisted report generation
+- Human-in-the-loop review and approval
+- **Professional PDF download** with hospital-grade formatting
+
+🏥 **Clinical-Grade Output**
+- Detailed patient information
+- Comprehensive imaging and lab findings
+- Clinical interpretations and recommendations
+- Critical findings highlighted
+- Reviewer signature and approval tracking
+
+📄 **PDF Download** (NEW!)
+- One-click download from website
+- Hospital-style professional formatting
+- Complete report with all sections
+- Ready for clinical use
 
 ## What is Motia?
 
@@ -33,36 +55,75 @@ Every Step has a `type` that defines how it triggers:
 | **`event`** | Event emitted | Background jobs, workflows |
 | **`cron`** | Schedule | Cleanup, reports, reminders |
 
+## 🚀 Quick Start
+
+### 1. Install Dependencies
+
+```bash
+# Backend dependencies
+npm install
+
+# Frontend dependencies
+cd frontend && npm install
+```
+
+### 2. Start Servers
+
+**Terminal 1 - Backend:**
+```bash
+npm run dev
+```
+Backend runs at: http://localhost:3000
+
+**Terminal 2 - Frontend:**
+```bash
+cd frontend && npm run dev
+```
+Frontend runs at: http://localhost:5173
+
+### 3. Use the Application
+
+1. Open http://localhost:5173
+2. Upload medical image and patient data
+3. Enter laboratory results
+4. Review AI-generated report
+5. Approve report
+6. **Download PDF** ⬇️
+
+📖 **Detailed Guide**: See [QUICKSTART_PDF.md](./QUICKSTART_PDF.md)
+
+## 📄 PDF Download Feature
+
+The system generates professional, hospital-grade PDF reports:
+
+- ✅ Comprehensive patient information
+- ✅ Detailed imaging and lab findings
+- ✅ Clinical interpretations
+- ✅ Reviewer approval signature
+- ✅ Medical disclaimers
+- ✅ Critical findings highlighted
+
+**Test PDF Generation:**
+```bash
+python_modules/bin/python test_pdf_generation.py
+```
+
+📘 **Full Documentation**: [PDF_DOWNLOAD_GUIDE.md](./PDF_DOWNLOAD_GUIDE.md)
+
 ## Development Commands
 
 ```bash
-# Start Workbench and development server
+# Start backend development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 
-# Start production server (without hot reload)
-npm run start
-# or
-yarn start
-# or
-pnpm start
+# Start frontend development server
+cd frontend && npm run dev
 
-# Generate TypeScript types from Step configs
-npm run generate-types
-# or
-yarn generate-types
-# or
-pnpm generate-types
+# Test PDF generation
+python_modules/bin/python test_pdf_generation.py
 
-# Build project for deployment
-npm run build
-# or
-yarn build
-# or
-pnpm build
+# Run with custom port
+npm run dev -- --port 3001
 ```
 
 ## Project Structure

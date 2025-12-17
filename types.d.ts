@@ -21,6 +21,7 @@ declare module 'motia' {
     'LabAnalysisAPI': ApiRouteHandler<{ session_id: string; lab_data: Record<string, number> }, ApiResponse<200, { status: string; session_id: string; message: string; abnormal_count: unknown; critical_count: unknown }>, never>
     'ImageAnalysisAPI': ApiRouteHandler<{ patient_id: string; patient_name: string; age: string; gender: string; study_date: string; image_type: string; image_path: string }, ApiResponse<200, { status: string; session_id: string; patient_id: string; message: string }>, never>
     'GetReportAPI': ApiRouteHandler<Record<string, unknown>, ApiResponse<200, { status: string; session_id: string; report?: Record<string, unknown> | unknown; pdf_path?: string | unknown }>, never>
+    'DownloadPDFAPI': ApiRouteHandler<Record<string, unknown>, ApiResponse<200, unknown> | ApiResponse<404, { status: string; message: string; report_id?: string | unknown; file_available?: boolean }>, never>
   }
     
 }

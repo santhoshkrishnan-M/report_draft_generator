@@ -119,8 +119,12 @@ async def handler(req, context):
         final_report["reviewer_comments"] = reviewer_comments
         final_report["requires_approval"] = False
         
+        # Ensure PDF output directory exists
+        pdf_output_dir = os.path.join(os.path.dirname(__file__), '../../outputs/pdfs')
+        os.makedirs(pdf_output_dir, exist_ok=True)
+        
         # Generate PDF
-        pdf_path = export_report_to_pdf(final_report, "/tmp/medical_reports")
+        pdf_path = export_report_to_pdf(final_report, pdf_output_dir)
         
         # Store final report
         await context.state.set(f"final_report_{session_id}", final_report)
